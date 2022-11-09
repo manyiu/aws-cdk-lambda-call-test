@@ -20,6 +20,7 @@ export class AwsCdkLambdaCallTestStack extends Stack {
     });
 
     const callerLambda = new lambda.Function(this, "CallerLambda", {
+      functionName: "callerLambdaFunction",
       runtime: lambda.Runtime.NODEJS_16_X,
       memorySize: 512,
       tracing: lambda.Tracing.ACTIVE,
@@ -30,6 +31,19 @@ export class AwsCdkLambdaCallTestStack extends Stack {
       },
     });
 
+    const caller10Lambda = new lambda.Function(this, "Caller10Lambda", {
+      functionName: "caller10LambdaFunction",
+      runtime: lambda.Runtime.NODEJS_16_X,
+      memorySize: 512,
+      tracing: lambda.Tracing.ACTIVE,
+      code: lambda.Code.fromAsset("lambdas/caller10"),
+      handler: "index.handler",
+      environment: {
+        HELLO_LAMBDA_NAME: randomHelloLambdaFunctionName,
+      },
+    });
+
     helloLambda.grantInvoke(callerLambda);
+    helloLambda.grantInvoke(caller10Lambda);
   }
 }
